@@ -13,7 +13,7 @@ class PartyTests(unittest.TestCase):
 
     def test_homepage(self):
         result = self.client.get("/")
-        self.assertIn(b"board games, rainbows, and ice cream sundaes", result.data)
+        self.assertIn(b"Please RSVP", result.data)
 
     def test_no_rsvp_yet(self):
         # FIXME: Add a test to show we see the RSVP form, but NOT the
@@ -46,22 +46,26 @@ class PartyTestsDatabase(unittest.TestCase):
         app.config['TESTING'] = True
 
         # Connect to test database (uncomment when testing database)
-        # connect_to_db(app, "postgresql:///testdb")
+        connect_to_db(app, "postgresql:///testdb")
 
         # Create tables and add sample data (uncomment when testing database)
-        # db.create_all()
-        # example_data()
+        db.create_all()
+        example_data()
 
     def tearDown(self):
         """Do at end of every test."""
 
         # (uncomment when testing database)
-        # db.session.close()
-        # db.drop_all()
+        db.session.close()
+        db.drop_all()
 
     def test_games(self):
         # FIXME: test that the games page displays the game from example_data()
-        print("FIXME")
+
+        result = self.client.get("/games")
+        self.assertEqual(result.status_code, 200)
+        self.assertIn(b"Checkers", result.data)
+        self.assertIn(b"a cross-country train adventure", result.data)
 
 
 if __name__ == "__main__":
