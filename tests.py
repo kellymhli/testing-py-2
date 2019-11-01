@@ -20,7 +20,6 @@ class PartyTests(unittest.TestCase):
         # party details
 
         result = self.client.get("/")
-        print(result.data)
         self.assertEqual(result.status_code, 200)
         self.assertIn(b"Please RSVP", result.data)
         self.assertNotIn(b"Party Details", result.data)
@@ -30,6 +29,7 @@ class PartyTests(unittest.TestCase):
                                   data={"name": "Jane",
                                         "email": "jane@jane.com"},
                                   follow_redirects=True)
+
         # FIXME: Once we RSVP, we should see the party details, but
         # not the RSVP form
         self.assertIn(b"Party Details", result.data)
@@ -60,12 +60,13 @@ class PartyTestsDatabase(unittest.TestCase):
         db.drop_all()
 
     def test_games(self):
-        # FIXME: test that the games page displays the game from example_data()
+        # Test that the games page displays the game from example_data()
 
         result = self.client.get("/games")
         self.assertEqual(result.status_code, 200)
         self.assertIn(b"Checkers", result.data)
         self.assertIn(b"a cross-country train adventure", result.data)
+        self.assertNotIn(b"Princes of Florence", result.data)
 
 
 if __name__ == "__main__":
